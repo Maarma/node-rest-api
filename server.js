@@ -22,7 +22,7 @@ app.get('/books', async(request, response) => {
     {
         console.log(error);
         response.status(400).send({
-            message: "Midagi läks valesti"
+            message: "Something went wrong. Try again."
         });
     }
     
@@ -36,7 +36,7 @@ app.get('/authors', async(request, response) => {
     {
         console.log(error);
         response.status(400).send({
-            message: "Midagi läks valesti"
+            message: "Somethind went wrong"
         });
     }
     
@@ -55,7 +55,7 @@ app.get('/books/:id', async(request, response) => {
         });
 
         if (!book){
-            throw new Error("Raamatut ei leitud!")
+            throw new Error("Book not found!")
         }
         response.status(200).json(book);
     }
@@ -74,4 +74,23 @@ const PORT = 3000;
 app.listen(PORT, () =>  /*callback*/
 {
     console.log(`Server listening on port ${PORT}`);
+});
+
+app.delete("/books/:id", async(request, response) => {
+    //const bookID = request.params.id;
+    const { id } = request.params;
+
+    try {
+        await prisma.books.delete({
+            where: {
+                id: Number(id)
+            },
+        });
+
+        
+
+            response.status(201);
+    } catch (error){
+        response.status(401).json({ message: "Something went wrong." });
+    }
 });
